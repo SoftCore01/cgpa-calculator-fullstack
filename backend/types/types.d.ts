@@ -5,5 +5,8 @@ declare namespace NodeJS {
     DB_PASSWORD: string;
     API_KEY: string;
     PORT: string;
+    COOKIE_SECRET: string;
+    COOKIE_NAME: string;
+    SESSION_SECRET: string
   }
 }

@@ -1,8 +1,8 @@
-import * as joi from "joi";
+import Joi from "Joi";
 
-export const signupSchema = joi.object({
-  username: joi.string().min(6).max(50).required(),
-  email: joi
+export const signupSchema = Joi.object({
+  username: Joi.string().min(6).max(50).required(),
+  email: Joi
     .string()
     .min(6)
     .max(50)
@@ -11,11 +11,11 @@ export const signupSchema = joi.object({
     .email({
       tlds: { allow: ["com", "net"] },
     }),
-  password: joi.string().required(),
+  password: Joi.string().required(),
 });
 
-export const signinSchema = joi.object({
-  email: joi
+export const signinSchema = Joi.object({
+  email: Joi
     .string()
     .min(6)
     .max(50)
@@ -24,5 +24,5 @@ export const signinSchema = joi.object({
     .email({
       tlds: { allow: ["com", "net"] },
     }),
-  password: joi.string().required(),
+  password: Joi.string().required(),
 });
