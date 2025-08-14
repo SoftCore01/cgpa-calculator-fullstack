@@ -1,0 +1,31 @@
+{
+  "name": "backend",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "build": "tsc -w",
+    "dev": "node --watch --trace-warnings --env-file=.env ./dist/index.js",
+    "start": "node --env-file=.env ./dist/index.js",
+    "commit": "git add . && git commit -m"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "module",
+  "dependencies": {
+    "@types/cookie-parser": "^1.4.9",
+    "@types/express": "^5.0.3",
+    "@types/express-session": "^1.18.2",
+    "@types/node": "^24.2.1",
+    "@types/passport-local": "^1.0.38",
+    "bcryptjs": "^3.0.2",
+    "cookie-parser": "^1.4.7",
+    "dotenv": "^17.2.1",
+    "express": "^5.1.0",
+    "express-session": "^1.18.2",
+    "joi": "^18.0.0",
+    "mongoose": "^8.17.1",
+    "passport-local": "^1.0.0"
+  }
+}

@@ -1,0 +1,13 @@
+1. Sign-up feature:
+  a.email and password
+  b.Gmail authentication
+
+2. Login feature:
+   a.email and password
+   b.Gmail authentication
+
+3. Logout freature:
+  a.Logout when user clicks a button
+  b.Logout user after session end in 1 hour
+
+3. Save courses and grades in mongodb:
