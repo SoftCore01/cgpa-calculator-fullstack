@@ -1,5 +1,5 @@
 import { useForm, type SubmitHandler } from "react-hook-form";
-import { signinSchema, type SignInSchema } from "../utils/schemas";
+import { signupSchema, type SignUpSchema, } from "../utils/schemas";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { endPoint } from "../utils/endPoints";
 import { BASEURL } from "../utils/Contants";
@@ -7,22 +7,22 @@ import { useNavigate } from "react-router-dom";
 import type { ApiResponse } from "../utils/types";
 
 
-const signinUrl = BASEURL + endPoint.auth.signin;
+const signupUrl = BASEURL + endPoint.auth.signup
 
-export default function SigninForm() {
+export default function SignupForm() {
   const navigate = useNavigate();
   const {
     register,
     handleSubmit,
     setError,
     formState: { errors, isSubmitting },
-  } = useForm<SignInSchema>({
-    resolver: zodResolver(signinSchema),
+  } = useForm<SignUpSchema>({
+    resolver: zodResolver(signupSchema),
   });
 
-  const onSubmit: SubmitHandler<SignInSchema> = async (data: SignInSchema) => {
+  const onSubmit: SubmitHandler<SignUpSchema> = async (data: SignUpSchema) => {
     try {
-      const response = await fetch(signinUrl, {
+      const response = await fetch(signupUrl, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         credentials: 'include',
@@ -41,7 +41,7 @@ export default function SigninForm() {
       }
 
       if (apiResponse.success) {
-        navigate("/"); //navigate to the homePage route
+        navigate("/signin"); //navigate to the homePage route
       }
     } catch (error) {
       setError("root", {
@@ -56,6 +56,19 @@ export default function SigninForm() {
         onSubmit={handleSubmit(onSubmit)}
         className="flex flex-col w-screen px-3 sm:max-w-[500px]"
       >
+        <input
+          className="h-10 rounded-2xl px-3 my-2"
+          {...register("username")}
+          type="text"
+          name="username"
+          id="username"
+          placeholder="Username"
+        />
+        {errors.email && (
+          <div className="px-3 my-2 text-red-800 text-sm">
+            {errors.username?.message}
+          </div>
+        )}
         <input
           className="h-10 rounded-2xl px-3"
           {...register("email")}

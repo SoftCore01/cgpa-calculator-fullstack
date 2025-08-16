@@ -20,8 +20,8 @@ function App() {
   return (
     <>
       <Routes>
-        <Route path="/signin" element={<SigninPage />} />
-        <Route path="/signup" element={<SignupPage />} />
+        <Route path="/signin" element={<SigninPage isAuthenticated={isAuthenticated}/>} />
+        <Route path="/signup" element={<SignupPage isAuthenticated={isAuthenticated}/>} />
         <Route element={<ProtectedRoute isAuthenticated={isAuthenticated} />}>
           <Route index element={<HomePage />} />
         </Route>

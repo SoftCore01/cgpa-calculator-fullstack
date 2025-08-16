@@ -12,7 +12,7 @@ const passwordSchema = z
   );
 
 export const signupSchema = z.object({
-    username: z.string().min(6).max(50),
+    username: z.string().min(6,{message: 'Username should be at lease 6 characters long'}).max(50),
     email: z.email(),
     password: passwordSchema,
 })

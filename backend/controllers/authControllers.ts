@@ -12,16 +12,20 @@ export const signUpController = async (req: Request, res: Response) => {
     });
     if (error) {
       console.log(error.details[0].message);
-      return res
-/*         .status(401) */
-        .json({ success: false, message: error.details[0].message });
+      return (
+        res
+          /*         .status(401) */
+          .json({ success: false, message: error.details[0].message })
+      );
     }
     //Update this when connecting to mongodb
     const existingUser = db.find((user) => user.email === email);
     if (existingUser)
-      return res
-/*         .status(401) */
-        .json({ success: false, message: "User already exists" });
+      return (
+        res
+          /*         .status(401) */
+          .json({ success: false, message: "User already exists" })
+      );
 
     db.push({ username, email, password });
     return res
@@ -40,32 +44,37 @@ export const signinController = async (req: Request, res: Response) => {
       password,
     });
     if (error)
-      return res
-/*         .status(401) */
-        .json({ success: false, message: error.details[0].message });
+      return (
+        res
+          /*         .status(401) */
+          .json({ success: false, message: error.details[0].message })
+      );
 
     const existingUser = db.find((user) => user.email == email);
 
     if (!existingUser)
-      return res
-        .json({ success: false, message: "User does not exist" });
+      return res.json({ success: false, message: "User does not exist" });
     if (existingUser.password !== password)
-      return res
-/*         .status(401) */
-        .send({ success: false, message: "Incorrect password" });
+      return (
+        res
+          /*         .status(401) */
+          .send({ success: false, message: "Incorrect password" })
+      );
 
     req.session.user = existingUser;
-    console.log(req.session.user, 'jllle')
-    return res
-/*       .status(200) */
-      .json({ success: true, message: "Signin successful" });
+    console.log(req.session.user, "jllle");
+    return (
+      res
+        /*       .status(200) */
+        .json({ success: true, message: "Signin successful" })
+    );
   } catch (error) {
     console.log(error);
   }
 };
 
 export const signOutController = async (req: Request, res: Response) => {
-  console.log(req.session.user)
+  console.log(req.session.user);
   if (req.session.user) {
     req.session.destroy((err) => {
       if (err) throw new Error(err);
