@@ -1,25 +1,31 @@
-import express, { urlencoded } from "express";
-import cookieParser from "cookie-parser";
+import express, { json } from "express";
 import session from "express-session";
 import * as dotenv from "dotenv";
 import routes from "./routers/index.js";
+import cors from "cors";
 dotenv.config();
 const PORT = process.env.PORT || 4000;
-const COOKIE_SECRET = process.env.COOKIE_SECRET || "A quick black fox 12345";
 const SESSION_SECRET = process.env.SESSION_SECRET || "Jumped over the lazy horse";
 const COOKIE_NAME = process.env.COOKIE_NAME;
 const app = express();
-app.use(urlencoded({ extended: true }), cookieParser(COOKIE_SECRET), session({
+app.set("trust proxy", 1);
+app.use(cors({
+    credentials: true,
+    origin: true,
+}), json(), session({
     secret: SESSION_SECRET,
     saveUninitialized: false,
     resave: false,
     name: COOKIE_NAME,
     cookie: {
         maxAge: 60000 * 60 * 2,
+        httpOnly: false,
+        secure: false
     },
 }), routes);
 app.get("/", (req, res) => {
     console.log("Hello world");
+    req.session.user = { username: "sf", email: 'erv', password: 'efe' };
     res.status(200).send({ msg: "Hello, world" });
 });
 app.listen(PORT, () => {

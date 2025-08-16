@@ -4,7 +4,6 @@ export const signupSchema = Joi.object({
   username: Joi.string().min(6).max(50).required(),
   email: Joi
     .string()
-    .min(6)
     .max(50)
     .required()
     .pattern(new RegExp("^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+.[a-zA-Z]{2,}$"))

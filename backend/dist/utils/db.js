@@ -1,4 +1,4 @@
 const db = [
-    { username: "AjuwonOS", email: "ajuwonos@gmail.com", password: "1234" },
+    { username: "AjuwonOS", email: "ajuwonos@gmail.com", password: "Cartoons01@" },
 ];
 export default db;
