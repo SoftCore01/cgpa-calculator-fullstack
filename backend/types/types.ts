@@ -2,7 +2,7 @@ export type User = {
   username: string;
   email: string;
   password: string;
-  sesmesters: Semester[];
+  semesters: Semester[];
 };
 
 export type Grade = "A" | "B" | "C" | "D" | "E" | "F";

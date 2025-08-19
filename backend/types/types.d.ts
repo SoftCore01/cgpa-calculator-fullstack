@@ -7,6 +7,9 @@ declare namespace NodeJS {
     PORT: string;
     COOKIE_SECRET: string;
     COOKIE_NAME: string;
-    SESSION_SECRET: string
+    SESSION_SECRET: string;
+    MONGODB_USERNAME: string;
+    MONGODB_PASSWORD: string;
+    MONGODB_CONNECTION_URL: string;
   }
 }

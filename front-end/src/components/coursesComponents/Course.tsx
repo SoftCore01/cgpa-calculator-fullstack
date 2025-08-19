@@ -62,9 +62,9 @@ export default function Course({
   };
   return (
     <>
-      <div ref={courseRef} className="py-2 px-[5vw] flex items-center justify-between w-full sm:w-3/4 lg:w-1/2">
+      <div ref={courseRef} className="py-2 flex items-center justify-between w-full sm:w-3/4 lg:w-1/2">
         <input
-          className=" hover:outline-[#646cff] hover:outline-1"
+          className="px-2 py-0.5 rounded-xl"
           type="text"
           name="course"
           value={inputValue}

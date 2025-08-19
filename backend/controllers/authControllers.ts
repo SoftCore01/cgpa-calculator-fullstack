@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import { signinSchema, signupSchema } from "../middlewares/validator.js";
-import db from "../utils/db.js";
+import { User } from "../models/usersModel.js";
+import { doHash, doHashValidation } from "../utils/hashing.js";
 
 export const signUpController = async (req: Request, res: Response) => {
   const { username, email, password } = req.body;
@@ -14,20 +15,27 @@ export const signUpController = async (req: Request, res: Response) => {
       console.log(error.details[0].message);
       return (
         res
-          /*         .status(401) */
           .json({ success: false, message: error.details[0].message })
       );
     }
     //Update this when connecting to mongodb
-    const existingUser = db.find((user) => user.email === email);
+    /* const existingUser = db.find((user) => user.email === email) */
+    const existingUser = await User.findOne({ email });
     if (existingUser)
       return (
         res
-          /*         .status(401) */
           .json({ success: false, message: "User already exists" })
       );
 
-    db.push({ username, email, password, sesmesters: [] });
+    const hashedPassword = await doHash(password, 12);
+    const newUser = new User({
+      username,
+      email,
+      password: hashedPassword,
+      semesters: [[{name:'', grade:'A', unit:0}]]
+    })
+    await newUser.save();
+    
     return res
       .status(201)
       .json({ success: true, message: "User created successfully" });
@@ -46,26 +54,26 @@ export const signinController = async (req: Request, res: Response) => {
     if (error)
       return (
         res
-          /*         .status(401) */
           .json({ success: false, message: error.details[0].message })
       );
 
-    const existingUser = db.find((user) => user.email == email);
+    const existingUser = await User.findOne({email}).select("+password");
 
     if (!existingUser)
       return res.json({ success: false, message: "User does not exist" });
-    if (existingUser.password !== password)
+
+    const isCorrectPassword = await doHashValidation(password, existingUser.password);
+    if (!isCorrectPassword)
       return (
         res
-          /*         .status(401) */
           .send({ success: false, message: "Incorrect password" })
       );
 
     req.session.user = existingUser;
-    console.log(req.session.user, "jllle");
+    console.log(req.session.user);
     return (
       res
-        /*       .status(200) */
+        .status(200)
         .json({
           success: true,
           message: "Signin successful",
@@ -78,7 +86,6 @@ export const signinController = async (req: Request, res: Response) => {
 };
 
 export const signOutController = async (req: Request, res: Response) => {
-
   if (req.session.user) {
     req.session.destroy((err) => {
       if (err) throw new Error(err);

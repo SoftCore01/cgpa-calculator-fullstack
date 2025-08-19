@@ -7,6 +7,7 @@ import {
   semestersAtom,
   systemAtom,
 } from "../../store/atoms";
+import System from "../System";
 
 export default function GradeDisplay() {
   const [semesters] = useAtom(semestersAtom);
@@ -24,7 +25,11 @@ export default function GradeDisplay() {
   }, [semesters, activeSemester, system]);
 
   return (
-    <div className="px-2 mt-5 flex flex-col gap-3.5 justify-center sm:flex-row">
+    <div className="px-2 mt-5 flex flex-col items-center gap-3.5 justify-center relative sm:flex-row">
+      <div className="sm:absolute sm:top-0 sm:z-50">
+        <System />
+      </div>
+
       <Progressbar textInfo="CGPA" value={cgpa} />
       <Progressbar textInfo="GPA" value={gpa} />
     </div>

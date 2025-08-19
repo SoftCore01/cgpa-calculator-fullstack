@@ -7,6 +7,7 @@ import { Link, useNavigate } from "react-router-dom";
 import type { SigninResponse } from "../../utils/types";
 import { useAtom } from "jotai";
 import { usernameAtom } from "../../store/atoms";
+import Button from "../Button";
 
 const signinUrl = BASEURL + endPoint.auth.signin;
 
@@ -85,13 +86,13 @@ export default function SigninForm() {
             {errors.password.message}
           </div>
         )}
-        <button
+        <Button
           className=" mx-auto my-3 "
           disabled={isSubmitting}
           type="submit"
         >
           {isSubmitting ? "Loading..." : "Submit"}
-        </button>
+        </Button>
         {errors.root && (
           <div className="px-3 my-2 text-red-800 text-md text-center">
             {errors.root.message}

@@ -8,7 +8,8 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 import { signinSchema, signupSchema } from "../middlewares/validator.js";
-import db from "../utils/db.js";
+import { User } from "../models/usersModel.js";
+import { doHash, doHashValidation } from "../utils/hashing.js";
 export const signUpController = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { username, email, password } = req.body;
     try {
@@ -20,16 +21,22 @@ export const signUpController = (req, res) => __awaiter(void 0, void 0, void 0, 
         if (error) {
             console.log(error.details[0].message);
             return (res
-                /*         .status(401) */
                 .json({ success: false, message: error.details[0].message }));
         }
         //Update this when connecting to mongodb
-        const existingUser = db.find((user) => user.email === email);
+        /* const existingUser = db.find((user) => user.email === email) */
+        const existingUser = yield User.findOne({ email });
         if (existingUser)
             return (res
-                /*         .status(401) */
                 .json({ success: false, message: "User already exists" }));
-        db.push({ username, email, password, sesmesters: [] });
+        const hashedPassword = yield doHash(password, 12);
+        const newUser = new User({
+            username,
+            email,
+            password: hashedPassword,
+            semesters: [[{ name: '', grade: 'A', unit: 0 }]]
+        });
+        yield newUser.save();
         return res
             .status(201)
             .json({ success: true, message: "User created successfully" });
@@ -47,19 +54,18 @@ export const signinController = (req, res) => __awaiter(void 0, void 0, void 0, 
         });
         if (error)
             return (res
-                /*         .status(401) */
                 .json({ success: false, message: error.details[0].message }));
-        const existingUser = db.find((user) => user.email == email);
+        const existingUser = yield User.findOne({ email }).select("+password");
         if (!existingUser)
             return res.json({ success: false, message: "User does not exist" });
-        if (existingUser.password !== password)
+        const isCorrectPassword = yield doHashValidation(password, existingUser.password);
+        if (!isCorrectPassword)
             return (res
-                /*         .status(401) */
                 .send({ success: false, message: "Incorrect password" }));
         req.session.user = existingUser;
-        console.log(req.session.user, "jllle");
+        console.log(req.session.user);
         return (res
-            /*       .status(200) */
+            .status(200)
             .json({
             success: true,
             message: "Signin successful",

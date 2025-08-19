@@ -1,13 +1,14 @@
 import { useAtom } from "jotai";
-import CourseComponent from "../components/coursesComponents/Course";
-import { activeSemesterAtom, semestersAtom } from "../store/atoms";
-import type { ApiResponse, Course } from "../utils/types";
-import { BASEURL } from "../utils/Contants";
-import { endPoint } from "../utils/endPoints";
+import CourseComponent from "./Course";
+import { activeSemesterAtom, semestersAtom } from "../../store/atoms";
+import type { ApiResponse, Course } from "../../utils/types";
+import { BASEURL } from "../../utils/Contants";
+import { endPoint } from "../../utils/endPoints";
+import Button from "../Button";
 
 const saveSemestersUrl = BASEURL + endPoint.semesters;
 
-export default function Semester() {
+export default function CourseList() {
   const [semesters, setSemesters] = useAtom(semestersAtom);
   const [activeSemester] = useAtom(activeSemesterAtom);
 
@@ -54,7 +55,8 @@ export default function Semester() {
   return (
     <>
       <div className="flex flex-col items-center ">
-        {semesters[0]?.map((semester, index) => (
+        <h2 className="text-2xl">Semester : { activeSemester + 1}</h2>
+        {semesters[activeSemester]?.map((semester, index) => (
           <CourseComponent
             key={index}
             index={index}
@@ -65,9 +67,9 @@ export default function Semester() {
         ))}
       </div>
       <div className="flex justify-center gap-3 my-10">
-        <button onClick={handleAddCourse}>Add Course</button>
-        <button onClick={handleRemoveAll}>Remove All</button>
-        <button onClick={handleSaveSemester}>Save</button>
+        <Button onClick={handleAddCourse}>Add Course</Button>
+        <Button onClick={handleRemoveAll}>Remove All</Button>
+        <Button onClick={handleSaveSemester}>Save</Button>
       </div>
     </>
   );
