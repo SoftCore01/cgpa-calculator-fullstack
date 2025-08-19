@@ -5,5 +5,5 @@ export const endPoint = {
     signout: "/auth/signout",
   },
 
-  data: {},
+  semesters: "/semesters",
 };

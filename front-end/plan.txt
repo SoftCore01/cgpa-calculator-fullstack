@@ -1,0 +1,9 @@
+Frontend:
+1. Create courses component
+2. Create semesters adding component
+3. Create cgpa and gpa display component
+
+
+Backend:
+1. Create model for storing courses and semesters
+2. 

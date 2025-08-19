@@ -1,5 +1,5 @@
 import { Navigate } from "react-router-dom";
-import SigninForm from "../components/SigninForm";
+import SigninForm from "../components/authComponents/SigninForm";
 
 export default function SigninPage({
   isAuthenticated,

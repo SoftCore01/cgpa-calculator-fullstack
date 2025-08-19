@@ -1,20 +1,20 @@
 import type { Course, Grade, Semester } from "./types";
 
 export function calculateGPA(semester: Semester, system: number) {
-  const totalPoints = semester.reduce((acc: number, course: Course) => {
+  const totalPoints = semester?.reduce((acc: number, course: Course) => {
     const gradeValue = gradeToValueConversion(system, course.grade);
     return acc + gradeValue * course.unit;
   }, 0);
 
-  const totalUnits = semester.reduce(
+  const totalUnits = semester?.reduce(
     (acc: number, course: Course) => acc + course.unit,
     0
   );
-  return (totalPoints / totalUnits).toFixed(2);
+  return parseFloat((totalPoints / totalUnits).toFixed(2));
 }
 
 export function calculateCGPA(semesters: Semester[], system: number) {
-  const allCourses = semesters.reduce(
+  const allCourses = semesters?.reduce(
     (acc: Semester, semester: Semester) => acc.concat(semester),
     []
   );
@@ -52,25 +52,14 @@ function gradeToValueConversion(system: number, grade: Grade) {
   }
 }
 
-const semester: Semester[] = [
-  [
-    { name: "Ore", grade: "A", unit: 3 },
-    { name: "Ore", grade: "A", unit: 2 },
-    { name: "Ore", grade: "A", unit: 0 },
-    { name: "Ore", grade: "A", unit: 3 },
-  ],
-  [
-    { name: "Ore", grade: "A", unit: 3 },
-    { name: "Ore", grade: "C", unit: 2 },
-    { name: "Ore", grade: "A", unit: 0 },
-    { name: "Ore", grade: "D", unit: 3 },
-  ],
-  [
-    { name: "Ore", grade: "A", unit: 3 },
-    { name: "Ore", grade: "F", unit: 2 },
-    { name: "Ore", grade: "A", unit: 0 },
-    { name: "Ore", grade: "C", unit: 3 },
-  ],
-];
+export function isGrade(value: string) {
+  const grades = ['A', 'B', 'C', 'D', 'E', 'F']
+  for (let i = 0; i < grades.length; i++) {
+    if (grades[i] == value) {
+      return true
+    }
+  }
+  return false
+}
 
-console.log(calculateCGPA(semester, 4));
+

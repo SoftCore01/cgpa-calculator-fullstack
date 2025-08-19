@@ -19,17 +19,17 @@ export const signUpController = (req, res) => __awaiter(void 0, void 0, void 0, 
         });
         if (error) {
             console.log(error.details[0].message);
-            return res
+            return (res
                 /*         .status(401) */
-                .json({ success: false, message: error.details[0].message });
+                .json({ success: false, message: error.details[0].message }));
         }
         //Update this when connecting to mongodb
         const existingUser = db.find((user) => user.email === email);
         if (existingUser)
-            return res
+            return (res
                 /*         .status(401) */
-                .json({ success: false, message: "User already exists" });
-        db.push({ username, email, password });
+                .json({ success: false, message: "User already exists" }));
+        db.push({ username, email, password, sesmesters: [] });
         return res
             .status(201)
             .json({ success: true, message: "User created successfully" });
@@ -46,36 +46,38 @@ export const signinController = (req, res) => __awaiter(void 0, void 0, void 0, 
             password,
         });
         if (error)
-            return res
+            return (res
                 /*         .status(401) */
-                .json({ success: false, message: error.details[0].message });
+                .json({ success: false, message: error.details[0].message }));
         const existingUser = db.find((user) => user.email == email);
         if (!existingUser)
-            return res
-                .json({ success: false, message: "User does not exist" });
+            return res.json({ success: false, message: "User does not exist" });
         if (existingUser.password !== password)
-            return res
+            return (res
                 /*         .status(401) */
-                .send({ success: false, message: "Incorrect password" });
+                .send({ success: false, message: "Incorrect password" }));
         req.session.user = existingUser;
-        console.log(req.session.user, 'jllle');
-        return res
+        console.log(req.session.user, "jllle");
+        return (res
             /*       .status(200) */
-            .json({ success: true, message: "Signin successful" });
+            .json({
+            success: true,
+            message: "Signin successful",
+            data: existingUser.username,
+        }));
     }
     catch (error) {
         console.log(error);
     }
 });
 export const signOutController = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    console.log(req.session.user);
     if (req.session.user) {
         req.session.destroy((err) => {
             if (err)
                 throw new Error(err);
         });
         return res
-            .clearCookie(process.env.COOKIE_NAME)
+            .clearCookie(`${process.env.COOKIE_NAME}`)
             .json({ success: true, message: "Signout Successful" });
     }
     return res.status(400).json({ success: false, message: "Bad Request" });

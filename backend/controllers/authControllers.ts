@@ -27,7 +27,7 @@ export const signUpController = async (req: Request, res: Response) => {
           .json({ success: false, message: "User already exists" })
       );
 
-    db.push({ username, email, password });
+    db.push({ username, email, password, sesmesters: [] });
     return res
       .status(201)
       .json({ success: true, message: "User created successfully" });
@@ -66,7 +66,11 @@ export const signinController = async (req: Request, res: Response) => {
     return (
       res
         /*       .status(200) */
-        .json({ success: true, message: "Signin successful" })
+        .json({
+          success: true,
+          message: "Signin successful",
+          data: existingUser.username,
+        })
     );
   } catch (error) {
     console.log(error);
@@ -74,13 +78,13 @@ export const signinController = async (req: Request, res: Response) => {
 };
 
 export const signOutController = async (req: Request, res: Response) => {
-  console.log(req.session.user);
+
   if (req.session.user) {
     req.session.destroy((err) => {
       if (err) throw new Error(err);
     });
     return res
-      .clearCookie(process.env.COOKIE_NAME)
+      .clearCookie(`${process.env.COOKIE_NAME}`)
       .json({ success: true, message: "Signout Successful" });
   }
   return res.status(400).json({ success: false, message: "Bad Request" });

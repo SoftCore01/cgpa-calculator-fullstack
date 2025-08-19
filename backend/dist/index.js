@@ -18,16 +18,17 @@ app.use(cors({
     resave: false,
     name: COOKIE_NAME,
     cookie: {
-        maxAge: 60000 * 60 * 2,
+        maxAge: 60000 * 60,
         httpOnly: false,
         secure: false
     },
+    rolling: true
 }), routes);
-app.get("/", (req, res) => {
-    console.log("Hello world");
-    req.session.user = { username: "sf", email: 'erv', password: 'efe' };
-    res.status(200).send({ msg: "Hello, world" });
-});
+/* app.get("/", (req, res) => {
+  console.log("Hello world");
+  req.session.user = {username: "sf", email:'erv', password:'efe'};
+  res.status(200).send({ msg: "Hello, world" });
+}); */
 app.listen(PORT, () => {
     console.log(`This application is running on Port:${PORT}`);
 });

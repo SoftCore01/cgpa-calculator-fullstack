@@ -1,0 +1,15 @@
+export type User = {
+  username: string;
+  email: string;
+  password: string;
+  sesmesters: Semester[];
+};
+
+export type Grade = "A" | "B" | "C" | "D" | "E" | "F";
+export type Course = {
+  name: string;
+  grade: Grade;
+  unit: number;
+};
+
+export type Semester = Course[];

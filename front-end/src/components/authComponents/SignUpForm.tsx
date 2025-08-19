@@ -1,51 +1,50 @@
 import { useForm, type SubmitHandler } from "react-hook-form";
-import { signinSchema, type SignInSchema } from "../utils/schemas";
+import { signupSchema, type SignUpSchema } from "../../utils/schemas";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { endPoint } from "../utils/endPoints";
-import { BASEURL } from "../utils/Contants";
-import { Link, useNavigate } from "react-router-dom";
-import type { ApiResponse } from "../utils/types";
+import { endPoint } from "../../utils/endPoints";
+import { BASEURL } from "../../utils/Contants";
+import { useNavigate } from "react-router-dom";
+import type { ApiResponse } from "../../utils/types";
 
+const signupUrl = BASEURL + endPoint.auth.signup;
 
-const signinUrl = BASEURL + endPoint.auth.signin;
-
-export default function SigninForm() {
+export default function SignupForm() {
   const navigate = useNavigate();
   const {
     register,
     handleSubmit,
     setError,
     formState: { errors, isSubmitting },
-  } = useForm<SignInSchema>({
-    resolver: zodResolver(signinSchema),
+  } = useForm<SignUpSchema>({
+    resolver: zodResolver(signupSchema),
   });
 
-  const onSubmit: SubmitHandler<SignInSchema> = async (data: SignInSchema) => {
+  const onSubmit: SubmitHandler<SignUpSchema> = async (data: SignUpSchema) => {
     try {
-      const response = await fetch(signinUrl, {
+      const response = await fetch(signupUrl, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        credentials: 'include',
+        credentials: "include",
         body: JSON.stringify(data),
       });
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
       const apiResponse: ApiResponse = await response.json();
-      console.log(apiResponse.message, typeof apiResponse.success)
-        if (!apiResponse.success) {
-          console.log('yes')
+      console.log(apiResponse.message, typeof apiResponse.success);
+      if (!apiResponse.success) {
+        console.log("yes");
         setError("root", {
           message: apiResponse.message,
         });
       }
 
       if (apiResponse.success) {
-        navigate("/"); //navigate to the homePage route
+        navigate("/signin"); //navigate to the homePage route
       }
     } catch (error) {
       setError("root", {
-        message: `${error}`
+        message: `${error}`,
       });
     }
   };
@@ -56,6 +55,19 @@ export default function SigninForm() {
         onSubmit={handleSubmit(onSubmit)}
         className="flex flex-col w-screen px-3 sm:max-w-[500px]"
       >
+        <input
+          className="h-10 rounded-2xl px-3 my-2"
+          {...register("username")}
+          type="text"
+          name="username"
+          id="username"
+          placeholder="Username"
+        />
+        {errors.email && (
+          <div className="px-3 my-2 text-red-800 text-sm">
+            {errors.username?.message}
+          </div>
+        )}
         <input
           className="h-10 rounded-2xl px-3"
           {...register("email")}
@@ -94,12 +106,6 @@ export default function SigninForm() {
             {errors.root.message}
           </div>
         )}
-        <Link
-          to="/signup"
-          className="text-center text-white hover:text-[#646cff]"
-        >
-          Sign Up
-        </Link>
       </form>
     </>
   );

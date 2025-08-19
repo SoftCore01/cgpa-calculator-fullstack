@@ -1,5 +1,5 @@
 import { Navigate } from "react-router-dom";
-import SignupForm from "../components/SignUpForm";
+import SignupForm from "../components/authComponents/SignUpForm";
 
 export default function SignupPage({
   isAuthenticated,
