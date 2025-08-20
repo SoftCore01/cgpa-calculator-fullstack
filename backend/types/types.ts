@@ -3,6 +3,8 @@ export type User = {
   email: string;
   password: string;
   semesters: Semester[];
+  activeSemester: number;
+  system: number
 };
 
 export type UserSession = string

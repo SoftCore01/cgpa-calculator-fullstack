@@ -9,32 +9,37 @@ export const readSemestersController = async (req, res) => {
             return res.json({
                 success: true,
                 message: "Semesters retrieved successfully",
-                data: existingUser.semesters,
+                semesters: existingUser.semesters,
+                activeSemester: existingUser.activeSemester,
+                system: existingUser.system
             });
         }
     }
     return res.status(401).json({ success: false, message: "Unauthorized" });
 };
-export const deleteSemestersController = async (req, res) => {
-    const user = req.session.user;
-    if (user) {
-        /* const user = req.session.user; */
-        const existingUser = await User.findOne({ email: user });
-        if (existingUser) {
-            const newSemester = [];
-            existingUser.semesters = [];
-            return res.json({
-                success: true,
-                message: "Semesters deleted successfully",
-            });
-        }
+/* export const deleteSemestersController = async (
+  req: Request,
+  res: Response
+) => {
+  const user = req.session.user;
+  if (user) {
+
+    const existingUser = await User.findOne({email: user});
+    if (existingUser) {
+      const newSemester:Semester[] = []
+      existingUser.semesters = [];
+      return res.json({
+        success: true,
+        message: "Semesters deleted successfully",
+      });
     }
-    return res.status(401).json({ success: false, message: "Unauthorized" });
-};
+  }
+  return res.status(401).json({ success: false, message: "Unauthorized" });
+}; */
 export const updateSemestersController = async (req, res) => {
     const user = req.session.user;
     if (user) {
-        const { semesters } = req.body;
+        const { semesters, activeSemester, system } = req.body;
         const { error, value } = semestersSchema.validate({
             semesters,
         });
@@ -46,10 +51,12 @@ export const updateSemestersController = async (req, res) => {
         const existingUser = await User.findOne({ email: user });
         if (existingUser) {
             existingUser.semesters = semesters;
+            existingUser.activeSemester = activeSemester;
+            existingUser.system = system;
             await existingUser.save();
             return res.json({
                 success: true,
-                message: "Semesters deleted successfully",
+                message: "Semesters save successfully",
             });
         }
     }

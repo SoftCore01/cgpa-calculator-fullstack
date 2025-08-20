@@ -24,6 +24,11 @@ const userSchema = new mongoose.Schema({
     type: [],
     required: [true, "A semester array is required"],
   },
+  activeSemester: {
+    type: Number,
+    required: [true, "ActiveSemester is required"],
+  },
+  system: { type: Number, required: [true, "ActiveSemester is required"] },
 });
 
 export const User = mongoose.model("User", userSchema);

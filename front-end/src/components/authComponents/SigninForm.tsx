@@ -8,6 +8,8 @@ import type { SigninResponse } from "../../utils/types";
 import { useAtom } from "jotai";
 import { usernameAtom } from "../../store/atoms";
 import Button from "../Button";
+import { toast } from "sonner";
+
 
 const signinUrl = BASEURL + endPoint.auth.signin;
 
@@ -24,7 +26,7 @@ export default function SigninForm() {
   });
 
   const onSubmit: SubmitHandler<SignInSchema> = async (data: SignInSchema) => {
-    console.log(data)
+
     try {
       const response = await fetch(signinUrl, {
         method: "POST",
@@ -36,7 +38,7 @@ export default function SigninForm() {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
       const apiResponse: SigninResponse = await response.json();
-      console.log(apiResponse.message, typeof apiResponse.success);
+      
       if (!apiResponse.success) {
         setError("root", {
           message: apiResponse.message,
@@ -45,11 +47,13 @@ export default function SigninForm() {
 
       if (apiResponse.success) {
         setUsername(apiResponse.data)
+        toast.success('Signin Successful')
         navigate("/"); //navigate to the homePage route
       }
     } catch (error) {
+      console.log(error)
       setError("root", {
-        message: `${error}`,
+        message: `An error occured while trying to signin. Please check your internet connect and try again`,
       });
     }
   };

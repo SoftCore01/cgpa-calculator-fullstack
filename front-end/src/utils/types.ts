@@ -6,7 +6,7 @@ export type Course = {
 
 export type Grade = "A" | "B" | "C" | "D" | "E" | "F";
 export type Semester = Course[];
-export type System = 5 | 4;
+export type System = number;
 
 export interface ApiResponse {
   success: boolean;
@@ -17,5 +17,7 @@ export interface SigninResponse extends ApiResponse {
   data: string;
 }
 export interface readSemesterResponse extends ApiResponse {
-  data: Semester[];
+  semesters: Semester[];
+  activeSemester: number;
+  system: System
 }

@@ -1,16 +1,18 @@
 import { useAtom } from "jotai";
 import CourseComponent from "./Course";
-import { activeSemesterAtom, semestersAtom } from "../../store/atoms";
+import { activeSemesterAtom, semestersAtom, systemAtom } from "../../store/atoms";
 import type { ApiResponse, Course } from "../../utils/types";
 import { BASEURL } from "../../utils/Contants";
 import { endPoint } from "../../utils/endPoints";
 import Button from "../Button";
+import { toast } from "sonner";
 
 const saveSemestersUrl = BASEURL + endPoint.semesters;
 
 export default function CourseList() {
   const [semesters, setSemesters] = useAtom(semestersAtom);
   const [activeSemester] = useAtom(activeSemesterAtom);
+  const [system] = useAtom(systemAtom)
 
   const handleAddCourse = () => {
     const newCourse = [...semesters[activeSemester]];
@@ -38,7 +40,7 @@ export default function CourseList() {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         credentials: "include",
-        body: JSON.stringify({ semesters: semesters }),
+        body: JSON.stringify({ semesters, activeSemester, system }),
       });
 
       if (!response.ok) {
@@ -46,7 +48,12 @@ export default function CourseList() {
       }
       const apiResponse: ApiResponse = await response.json();
       if (!apiResponse.success) {
+        toast.error(
+          "Save unsuccessful. Please check your internet connection."
+        );
         throw new Error(`HTTP error! Status: ${apiResponse.message}`);
+      } else {
+        toast.success("Data saved successfully");
       }
     } catch (error) {
       console.log(error);
@@ -55,7 +62,7 @@ export default function CourseList() {
   return (
     <>
       <div className="flex flex-col items-center ">
-        <h2 className="text-2xl">Semester : { activeSemester + 1}</h2>
+        <h2 className="text-2xl">Semester : {activeSemester + 1}</h2>
         {semesters[activeSemester]?.map((semester, index) => (
           <CourseComponent
             key={index}

@@ -12,14 +12,12 @@ export const signUpController = async (req: Request, res: Response) => {
       password,
     });
     if (error) {
-      /* console.log(error.details[0].message); */
       return (
         res
           .json({ success: false, message: error.details[0].message })
       );
     }
-    //Update this when connecting to mongodb
-    /* const existingUser = db.find((user) => user.email === email) */
+
     const existingUser = await User.findOne({ email });
     if (existingUser)
       return (
@@ -32,7 +30,9 @@ export const signUpController = async (req: Request, res: Response) => {
       username,
       email,
       password: hashedPassword,
-      semesters: [[{name:'', grade:'A', unit:0}]]
+      semesters: [[{ name: '', grade: 'A', unit: 0 }]],
+      activeSemester: 0,
+      system: 5
     })
     await newUser.save();
     
@@ -70,10 +70,8 @@ export const signinController = async (req: Request, res: Response) => {
       );
 
     req.session.user = existingUser.email
-    /* console.log(req.session.user); */
     return (
       res
-        .status(200)
         .json({
           success: true,
           message: "Signin successful",

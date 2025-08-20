@@ -5,7 +5,7 @@ import ProtectedRoute from "./components/authComponents/ProtectedRoute";
 import HomePage from "./pages/HomePage";
 import { useEffect, useState } from "react";
 import { useCookies } from "react-cookie";
-
+import {Toaster} from 'sonner'
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [cookies] = useCookies(["CGPA.COM"]);
@@ -34,7 +34,7 @@ function App() {
             <Route index element={<HomePage />} />
           </Route>
         </Routes>
-
+        <Toaster theme="dark" />
     </>
   );
 }

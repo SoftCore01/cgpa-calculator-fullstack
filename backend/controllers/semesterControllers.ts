@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import { semestersSchema } from "../middlewares/validator.js";
 import { User } from "../models/usersModel.js";
-import { Semester } from "../types/types.js";
+
 
 
 
@@ -14,20 +14,22 @@ export const readSemestersController = async (req: Request, res: Response) => {
       return res.json({
         success: true,
         message: "Semesters retrieved successfully",
-        data: existingUser.semesters,
+        semesters: existingUser.semesters,
+        activeSemester: existingUser.activeSemester,
+        system: existingUser.system
       });
     } 
   }
   return res.status(401).json({ success: false, message: "Unauthorized" });
 };
 
-export const deleteSemestersController = async (
+/* export const deleteSemestersController = async (
   req: Request,
   res: Response
 ) => {
   const user = req.session.user;
   if (user) {
-    /* const user = req.session.user; */
+
     const existingUser = await User.findOne({email: user});
     if (existingUser) {
       const newSemester:Semester[] = []
@@ -39,7 +41,7 @@ export const deleteSemestersController = async (
     } 
   }
   return res.status(401).json({ success: false, message: "Unauthorized" });
-};
+}; */
 
 export const updateSemestersController = async (
   req: Request,
@@ -47,7 +49,7 @@ export const updateSemestersController = async (
 ) => {
   const user = req.session.user;
   if (user) {
-    const { semesters } = req.body;
+    const { semesters, activeSemester, system } = req.body;
     const { error, value } = semestersSchema.validate({
       semesters,
     });
@@ -61,10 +63,12 @@ export const updateSemestersController = async (
     const existingUser = await User.findOne({ email: user });
     if (existingUser) {
       existingUser.semesters = semesters;
+      existingUser.activeSemester = activeSemester
+      existingUser.system = system
       await existingUser.save()
       return res.json({
         success: true,
-        message: "Semesters deleted successfully",
+        message: "Semesters save successfully",
       });
     }
   }

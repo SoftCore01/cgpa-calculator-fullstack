@@ -6,6 +6,7 @@ import { BASEURL } from "../../utils/Contants";
 import { Link, useNavigate } from "react-router-dom";
 import type { ApiResponse } from "../../utils/types";
 import Button from "../Button";
+import { toast } from "sonner";
 
 const signupUrl = BASEURL + endPoint.auth.signup;
 
@@ -32,20 +33,19 @@ export default function SignupForm() {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
       const apiResponse: ApiResponse = await response.json();
-      console.log(apiResponse.message, typeof apiResponse.success);
       if (!apiResponse.success) {
-        console.log("yes");
         setError("root", {
           message: apiResponse.message,
         });
       }
-
       if (apiResponse.success) {
+        toast.success('Your account has been created successfully')
         navigate("/signin"); //navigate to the homePage route
       }
     } catch (error) {
+      console.log(error)
       setError("root", {
-        message: `${error}`,
+        message: `An error occured while trying to create your account. Please check your internet connect and try again`,
       });
     }
   };
