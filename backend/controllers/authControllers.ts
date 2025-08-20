@@ -12,7 +12,7 @@ export const signUpController = async (req: Request, res: Response) => {
       password,
     });
     if (error) {
-      console.log(error.details[0].message);
+      /* console.log(error.details[0].message); */
       return (
         res
           .json({ success: false, message: error.details[0].message })
@@ -69,8 +69,8 @@ export const signinController = async (req: Request, res: Response) => {
           .send({ success: false, message: "Incorrect password" })
       );
 
-    req.session.user = existingUser;
-    console.log(req.session.user);
+    req.session.user = existingUser.email
+    /* console.log(req.session.user); */
     return (
       res
         .status(200)

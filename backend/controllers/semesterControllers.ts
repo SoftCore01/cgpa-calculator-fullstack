@@ -9,7 +9,7 @@ export const readSemestersController = async (req: Request, res: Response) => {
   const user = req.session.user;
   if (user) {
     /* const user = req.session.user; */
-    const existingUser = await User.findOne({email: user.email});
+    const existingUser = await User.findOne({email: user});
     if (existingUser) {
       return res.json({
         success: true,
@@ -28,7 +28,7 @@ export const deleteSemestersController = async (
   const user = req.session.user;
   if (user) {
     /* const user = req.session.user; */
-    const existingUser = await User.findOne({email: user.email});
+    const existingUser = await User.findOne({email: user});
     if (existingUser) {
       const newSemester:Semester[] = []
       existingUser.semesters = [];
@@ -51,14 +51,14 @@ export const updateSemestersController = async (
     const { error, value } = semestersSchema.validate({
       semesters,
     });
-    console.log(semesters)
+    /* console.log(semesters) */
     if (error)
       return (
         res
           /*         .status(401) */
           .json({ success: false, message: error.details[0].message })
       );
-    const existingUser = await User.findOne({ email: user.email });
+    const existingUser = await User.findOne({ email: user });
     if (existingUser) {
       existingUser.semesters = semesters;
       await existingUser.save()

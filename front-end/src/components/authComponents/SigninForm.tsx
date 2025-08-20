@@ -91,19 +91,21 @@ export default function SigninForm() {
           disabled={isSubmitting}
           type="submit"
         >
-          {isSubmitting ? "Loading..." : "Submit"}
+          {isSubmitting ? "Loading..." : "Sign In"}
         </Button>
         {errors.root && (
           <div className="px-3 my-2 text-red-800 text-md text-center">
             {errors.root.message}
           </div>
         )}
-        <Link
-          to="/signup"
-          className="text-center text-white hover:text-[#646cff]"
-        >
-          Sign Up
-        </Link>
+        <div className="flex justify-center">
+          <Link
+            to="/signup"
+            className="w-20 text-center text-white hover:text-[#646cff]"
+          >
+            Sign up
+          </Link>
+        </div>
       </form>
     </>
   );

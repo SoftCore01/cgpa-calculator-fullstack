@@ -5,6 +5,8 @@ export type User = {
   semesters: Semester[];
 };
 
+export type UserSession = string
+
 export type Grade = "A" | "B" | "C" | "D" | "E" | "F";
 export type Course = {
   name: string;

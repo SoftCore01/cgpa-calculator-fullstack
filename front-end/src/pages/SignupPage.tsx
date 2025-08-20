@@ -10,7 +10,7 @@ export default function SignupPage({
     <Navigate to="/" replace />
   ) : (
     <div className="flex flex-col justify-center items-center min-h-screen">
-      <h1>SignUp Page</h1>
+      <h1>SignUp</h1>
       <SignupForm />
     </div>
   );

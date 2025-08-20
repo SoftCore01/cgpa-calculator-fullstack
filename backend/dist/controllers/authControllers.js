@@ -1,16 +1,7 @@
-var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
-    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
-    return new (P || (P = Promise))(function (resolve, reject) {
-        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
-    });
-};
 import { signinSchema, signupSchema } from "../middlewares/validator.js";
 import { User } from "../models/usersModel.js";
 import { doHash, doHashValidation } from "../utils/hashing.js";
-export const signUpController = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+export const signUpController = async (req, res) => {
     const { username, email, password } = req.body;
     try {
         const { error, value } = signupSchema.validate({
@@ -19,24 +10,24 @@ export const signUpController = (req, res) => __awaiter(void 0, void 0, void 0, 
             password,
         });
         if (error) {
-            console.log(error.details[0].message);
+            /* console.log(error.details[0].message); */
             return (res
                 .json({ success: false, message: error.details[0].message }));
         }
         //Update this when connecting to mongodb
         /* const existingUser = db.find((user) => user.email === email) */
-        const existingUser = yield User.findOne({ email });
+        const existingUser = await User.findOne({ email });
         if (existingUser)
             return (res
                 .json({ success: false, message: "User already exists" }));
-        const hashedPassword = yield doHash(password, 12);
+        const hashedPassword = await doHash(password, 12);
         const newUser = new User({
             username,
             email,
             password: hashedPassword,
             semesters: [[{ name: '', grade: 'A', unit: 0 }]]
         });
-        yield newUser.save();
+        await newUser.save();
         return res
             .status(201)
             .json({ success: true, message: "User created successfully" });
@@ -44,8 +35,8 @@ export const signUpController = (req, res) => __awaiter(void 0, void 0, void 0, 
     catch (error) {
         console.log(error);
     }
-});
-export const signinController = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+};
+export const signinController = async (req, res) => {
     const { email, password } = req.body;
     try {
         const { error, value } = signinSchema.validate({
@@ -55,15 +46,15 @@ export const signinController = (req, res) => __awaiter(void 0, void 0, void 0, 
         if (error)
             return (res
                 .json({ success: false, message: error.details[0].message }));
-        const existingUser = yield User.findOne({ email }).select("+password");
+        const existingUser = await User.findOne({ email }).select("+password");
         if (!existingUser)
             return res.json({ success: false, message: "User does not exist" });
-        const isCorrectPassword = yield doHashValidation(password, existingUser.password);
+        const isCorrectPassword = await doHashValidation(password, existingUser.password);
         if (!isCorrectPassword)
             return (res
                 .send({ success: false, message: "Incorrect password" }));
-        req.session.user = existingUser;
-        console.log(req.session.user);
+        req.session.user = existingUser.email;
+        /* console.log(req.session.user); */
         return (res
             .status(200)
             .json({
@@ -75,8 +66,8 @@ export const signinController = (req, res) => __awaiter(void 0, void 0, void 0, 
     catch (error) {
         console.log(error);
     }
-});
-export const signOutController = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+};
+export const signOutController = async (req, res) => {
     if (req.session.user) {
         req.session.destroy((err) => {
             if (err)
@@ -87,4 +78,4 @@ export const signOutController = (req, res) => __awaiter(void 0, void 0, void 0,
             .json({ success: true, message: "Signout Successful" });
     }
     return res.status(400).json({ success: false, message: "Bad Request" });
-});
+};

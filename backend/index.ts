@@ -1,33 +1,56 @@
-import express, { json, urlencoded } from "express";
-import session, { MemoryStore } from "express-session";
-import * as dotenv from "dotenv";
+import express, { json } from "express";
+import session from "express-session";
 import routes from "./routers/index.js";
-import cors from "cors";
+/* import cors from "cors"; */
 import mongoose from "mongoose";
-
-dotenv.config();
-
-const PORT = process.env.PORT || 4000;
-const SESSION_SECRET =
-  process.env.SESSION_SECRET || "Jumped over the lazy horse";
-const COOKIE_NAME = process.env.COOKIE_NAME;
-const MONGODB_CONNECTION_URL = process.env.MONGODB_CONNECTION_URL;
-
+import { createClient } from "redis";
+import { RedisStore } from "connect-redis";
+import {
+  COOKIE_NAME,
+  MONGODB_CONNECTION_URL,
+  PORT,
+  REDIS_HOST,
+  REDIS_PASSWORD,
+  REDIS_PORT,
+  REDIS_USERNAME,
+  SESSION_SECRET,
+} from "./utils/configs.js";
 
 const app = express();
-mongoose.connect(`${MONGODB_CONNECTION_URL}`)
-  .then(() => console.log('Database connection established'))
-  .catch(err => console.log(err))
+const redisClient = createClient({
+  username: REDIS_USERNAME,
+  password: REDIS_PASSWORD,
+  socket: {
+    host: REDIS_HOST,
+    port: REDIS_PORT,
+  },
+});
+
+/* const redisClient = createClient({
+  url: "redis://localhost:6379",
+}); */
+
+redisClient.on("error", (err) => console.error("Redis Client Error", err));
+await redisClient.connect();
+
+const redisStore = new RedisStore({
+  client: redisClient,
+});
+mongoose
+  .connect(`${MONGODB_CONNECTION_URL}`)
+  .then(() => console.log("Database connection established"))
+  .catch((err) => console.log(err));
 
 app.set("trust proxy", 1);
 app.use(
-  cors({
+  /* cors({ //CORS configuration when you want to expose api to any origin 
     credentials: true,
     origin: true,
-  }),
+  }), */
   express.static("frontend"),
   json(),
   session({
+    store: redisStore,
     secret: SESSION_SECRET,
     saveUninitialized: false,
     resave: false,
@@ -41,12 +64,6 @@ app.use(
   }),
   routes
 );
-
-/* app.get("/", (req, res) => {
-  console.log("Hello world");
-  req.session.user = {username: "sf", email:'erv', password:'efe'};
-  res.status(200).send({ msg: "Hello, world" });
-}); */
 
 app.get("/signin", (req, res) => {
   res.redirect("/");
